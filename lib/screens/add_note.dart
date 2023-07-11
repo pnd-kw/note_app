@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:intl/intl.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,7 +21,10 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
 
   void _saveNote() {
     final enteredTitle = _titleController.text;
-    final createdDate = DateFormat.yMMMd().format(DateTime.now());
+    final createdDate =
+        DateFormat('E, d MMM yyyy h:mm a').format(DateTime.now());
+    final updatedDate =
+        DateFormat('E, d MMM yyyy h:mm a').format(DateTime.now());
     final enteredContent = _noteContentController.text;
 
     if (enteredTitle.isEmpty || enteredContent.isEmpty) {
@@ -31,6 +35,7 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
           enteredTitle,
           enteredContent,
           createdDate,
+          updatedDate,
         );
 
     Navigator.of(context).pop();
