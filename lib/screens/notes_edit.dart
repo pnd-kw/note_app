@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:note_app/models/note.dart';
 import 'package:note_app/providers/user_notes.dart';
+
+import 'package:note_app/models/note.dart';
 
 class NotesEditScreen extends ConsumerStatefulWidget {
   static const routeName = '/note-edit-screen';
 
   const NotesEditScreen({
     super.key,
-    // required this.notes,
   });
 
   @override
@@ -25,24 +27,25 @@ class _NotesEditScreenState extends ConsumerState<NotesEditScreen> {
     super.didChangeDependencies();
   }
 
-  // @override
-  // void initState() {
-  //   _noteEditController.text = noteId.noteContent;
-  //   super.initState();
-  // }
-
   @override
   void dispose() {
     _noteEditController.dispose();
     super.dispose();
   }
 
-  // final Note notes;
   @override
   Widget build(BuildContext context) {
     final noteId = ModalRoute.of(context)!.settings.arguments as Note;
-    final removeNote = ref.read(userNotesProvider.notifier).deleteNote(noteId);
-    //final const noteContent = ref.read(userNotesProvider.notifier).loadNote();
+
+    void editNote() {
+      final updatedNoteContent = _noteEditController.text;
+      final updatedDate =
+          DateFormat('E, d MMM yyyy h:mm a').format(DateTime.now());
+
+      ref
+          .read(userNotesProvider.notifier)
+          .editNote(noteId.id, updatedNoteContent, updatedDate);
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -65,11 +68,9 @@ class _NotesEditScreenState extends ConsumerState<NotesEditScreen> {
                   actions: [
                     TextButton(
                       onPressed: () {
-                        removeNote;
+                        ref.read(userNotesProvider.notifier).deleteNote(noteId);
                         Navigator.of(context).pushNamedAndRemoveUntil(
                             '/note-screen', (Route<dynamic> route) => false);
-                        //   ),
-                        // );
                       },
                       child: const Text('Yes'),
                     ),
@@ -82,8 +83,6 @@ class _NotesEditScreenState extends ConsumerState<NotesEditScreen> {
                   ],
                 ),
               );
-              // removeNote;
-              // Navigator.of(context).pop();
             },
             icon: const Icon(Icons.delete),
           ),
@@ -106,7 +105,11 @@ class _NotesEditScreenState extends ConsumerState<NotesEditScreen> {
             ),
             const SizedBox(height: 20),
             TextButton.icon(
-              onPressed: () {},
+              onPressed: () {
+                editNote();
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    '/note-screen', (Route<dynamic> route) => false);
+              },
               icon: const Icon(Icons.check),
               label: const Text('Save'),
               style: ButtonStyle(

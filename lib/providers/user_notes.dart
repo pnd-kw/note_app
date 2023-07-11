@@ -14,7 +14,10 @@ Future<Database> _getDatabase() async {
       return db.execute(
           'CREATE TABLE user_notes(id TEXT PRIMARY KEY, title TEXT, noteContent TEXT, createdAt DATETIME)');
     },
-    version: 1,
+    onUpgrade: (db, oldVersion, newVersion) {
+      return db.execute('ALTER TABLE user_notes ADD COLUMN updatedAt DATETIME');
+    },
+    version: 2,
   );
   return db;
 }
@@ -24,13 +27,14 @@ class UserNotesNotifier extends StateNotifier<List<Note>> {
 
   Future<void> loadNote() async {
     final db = await _getDatabase();
-    final dbData = await db.query('user_notes');
+    final dbData = await db.query('user_notes', orderBy: 'updatedAt DESC');
     final note = dbData
         .map(
           (row) => Note(
               id: row['id'] as String,
               title: row['title'] as String,
               createdAt: row['createdAt'] as String,
+              updatedAt: row['updatedAt'] as String,
               noteContent: row['noteContent'] as String),
         )
         .toList();
@@ -43,14 +47,28 @@ class UserNotesNotifier extends StateNotifier<List<Note>> {
     final id = notes.id;
     db.delete('user_notes', where: 'id = ?', whereArgs: [id]);
 
-    state = [notes, ...state];
+    state = [...state.where((notes) => notes.id != id)];
   }
 
-  void addNote(String title, String noteContent, String createdAt) async {
+  Future<void> editNote(String id, String noteContent, String updatedAt) async {
+    final db = await _getDatabase();
+    db.update(
+        'user_notes',
+        {
+          'noteContent': noteContent,
+          'updatedAt': updatedAt,
+        },
+        where: 'id = ?',
+        whereArgs: [id]);
+  }
+
+  void addNote(String title, String noteContent, String createdAt,
+      String updatedAt) async {
     final newNote = Note(
       title: title,
       noteContent: noteContent,
       createdAt: createdAt,
+      updatedAt: updatedAt,
     );
 
     final db = await _getDatabase();
@@ -59,6 +77,7 @@ class UserNotesNotifier extends StateNotifier<List<Note>> {
       'title': newNote.title,
       'noteContent': newNote.noteContent,
       'createdAt': newNote.createdAt,
+      'updatedAt': newNote.updatedAt,
     });
 
     state = [newNote, ...state];

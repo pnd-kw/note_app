@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import 'package:note_app/models/note.dart';
+
 import 'package:note_app/screens/notes_edit.dart';
 
 class NotesItem extends StatelessWidget {
@@ -12,6 +14,9 @@ class NotesItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var initialDate = notes.createdAt.toString;
+    var updatedDate = notes.updatedAt.toString;
+
     return Card(
       elevation: 2,
       child: Padding(
@@ -23,11 +28,6 @@ class NotesItem extends StatelessWidget {
           onTap: () {
             Navigator.of(context)
                 .pushNamed(NotesEditScreen.routeName, arguments: notes);
-            // // Navigator.of(context).push(
-            // //   MaterialPageRoute(
-            // //     builder: (ctx) => NotesEditScreen(notes: notes),
-            // //   ),
-            // );
           },
           title: Text(
             notes.title,
@@ -38,7 +38,6 @@ class NotesItem extends StatelessWidget {
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // const SizedBox(height: 10),
               RichText(
                 text: TextSpan(
                   text: notes.noteContent,
@@ -49,18 +48,41 @@ class NotesItem extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 10),
-              Text(
-                notes.createdAt.toString(),
-                style: const TextStyle(fontSize: 10),
+              Column(
+                children: [
+                  Row(
+                    children: [
+                      const Text(
+                        'Created Date : ',
+                        style: TextStyle(fontSize: 10),
+                      ),
+                      Text(
+                        notes.createdAt.toString(),
+                        style: const TextStyle(fontSize: 10),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      const Text(
+                        'Latest Update : ',
+                        style: TextStyle(fontSize: 10),
+                      ),
+                      initialDate != updatedDate
+                          ? Text(
+                              notes.updatedAt.toString(),
+                              style: const TextStyle(fontSize: 10),
+                            )
+                          : Text(
+                              notes.createdAt.toString(),
+                              style: const TextStyle(fontSize: 10),
+                            ),
+                    ],
+                  )
+                ],
               ),
             ],
           ),
-          // trailing: IconButton(
-          //   onPressed: () {
-
-          //   },
-          //   icon: const Icon(Icons.delete),
-          // ),
         ),
       ),
     );
