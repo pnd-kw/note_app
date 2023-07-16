@@ -18,30 +18,38 @@ class AddNoteScreen extends ConsumerStatefulWidget {
 class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
   final _titleController = TextEditingController();
   final _noteContentController = TextEditingController();
+  String enteredTitle = '';
+  String enteredContent = '';
+  final _formAddNote = GlobalKey<FormState>();
 
   // Save Note Function
   void _saveNote() {
-    final enteredTitle = _titleController.text;
+    // final enteredTitle = _titleController.text;
+    enteredTitle;
+    enteredContent;
     final createdDate =
         // DateFormat('E, d MMM yyyy h:mm a').format(DateTime.now());
         DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
     final updatedDate =
         // DateFormat('E, d MMM yyyy h:mm a').format(DateTime.now());
         DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
-    final enteredContent = _noteContentController.text;
+    // final enteredContent = _noteContentController.text;
+    final isValid = _formAddNote.currentState?.validate();
 
-    if (enteredTitle.isEmpty || enteredContent.isEmpty) {
-      return;
+    // if (enteredTitle.isEmpty || enteredContent.isEmpty) {
+    //   return;
+    // }
+
+    if (isValid != null && isValid) {
+      ref.read(userNotesProvider.notifier).addNote(
+            enteredTitle,
+            enteredContent,
+            createdDate,
+            updatedDate,
+          );
+
+      Navigator.of(context).pop();
     }
-
-    ref.read(userNotesProvider.notifier).addNote(
-          enteredTitle,
-          enteredContent,
-          createdDate,
-          updatedDate,
-        );
-
-    Navigator.of(context).pop();
   }
 
   @override
@@ -74,37 +82,101 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
                 padding:
                     const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                 child: Text(
-                  DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()),
+                  'Current Date and Time: ${DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now())}',
                   style: Theme.of(context).textTheme.titleSmall!.copyWith(
                       color: Theme.of(context).colorScheme.onBackground),
                 ),
               ),
             ),
-            // Note Title TextField
-            TextField(
-              controller: _titleController,
-              decoration: InputDecoration(
-                labelText: 'Title',
-                border: OutlineInputBorder(
-                  borderSide: const BorderSide(width: 2),
-                  borderRadius: BorderRadius.circular(10),
-                ),
+            Form(
+              key: _formAddNote,
+              child: Column(
+                children: [
+                  // Note Title TextField
+                  TextFormField(
+                    controller: _titleController,
+                    validator: (text) {
+                      if (text == null || text.isEmpty) {
+                        return 'This field could not be empty.';
+                      } else {
+                        enteredTitle = _titleController.text;
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      labelText: 'Title',
+                      border: OutlineInputBorder(
+                        borderSide: const BorderSide(width: 2),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  // Note TextField
+                  TextFormField(
+                    controller: _noteContentController,
+                    validator: (text) {
+                      if (text == null || text.isEmpty) {
+                        return 'This field could not be empty.';
+                      } else {
+                        enteredContent = _noteContentController.text;
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      labelText: 'This is my note...',
+                      border: OutlineInputBorder(
+                        borderSide: const BorderSide(width: 2),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    minLines: 10,
+                    maxLines: null,
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 20),
-            // Note TextField
-            TextField(
-              controller: _noteContentController,
-              decoration: InputDecoration(
-                labelText: 'This is my note...',
-                border: OutlineInputBorder(
-                  borderSide: const BorderSide(width: 2),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              minLines: 10,
-              maxLines: null,
-            ),
+            // // Note Title TextField
+            // TextFormField(
+            //   controller: _titleController,
+            //   validator: (text) {
+            //     if (text == null || text.isEmpty) {
+            //       return 'This field could not be empty.';
+            //     } else {
+            //       enteredTitle = _titleController.text;
+            //     }
+            //     return null;
+            //   },
+            //   decoration: InputDecoration(
+            //     labelText: 'Title',
+            //     border: OutlineInputBorder(
+            //       borderSide: const BorderSide(width: 2),
+            //       borderRadius: BorderRadius.circular(10),
+            //     ),
+            //   ),
+            // ),
+            // const SizedBox(height: 20),
+            // // Note TextField
+            // TextFormField(
+            //   controller: _noteContentController,
+            //   validator: (text) {
+            //     if (text == null || text.isEmpty) {
+            //       return 'This field could not be empty.';
+            //     } else {
+            //       enteredContent = _noteContentController.text;
+            //     }
+            //     return null;
+            //   },
+            //   decoration: InputDecoration(
+            //     labelText: 'This is my note...',
+            //     border: OutlineInputBorder(
+            //       borderSide: const BorderSide(width: 2),
+            //       borderRadius: BorderRadius.circular(10),
+            //     ),
+            //   ),
+            //   minLines: 10,
+            //   maxLines: null,
+            // ),
             const SizedBox(height: 20),
             // Add Note Button
             TextButton.icon(

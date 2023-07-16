@@ -19,6 +19,8 @@ class NotesEditScreen extends ConsumerStatefulWidget {
 
 class _NotesEditScreenState extends ConsumerState<NotesEditScreen> {
   final _noteEditController = TextEditingController();
+  String updatedNoteContent = '';
+  final _formEditNote = GlobalKey<FormState>();
 
   // Get the note initial/latest value
   @override
@@ -40,13 +42,19 @@ class _NotesEditScreenState extends ConsumerState<NotesEditScreen> {
 
     // Edit note function
     void editNote() {
-      final updatedNoteContent = _noteEditController.text;
+      updatedNoteContent;
       final updatedDate =
           DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
+      final isValid = _formEditNote.currentState?.validate();
 
-      ref
-          .read(userNotesProvider.notifier)
-          .editNote(noteId.id, updatedNoteContent, updatedDate);
+      if (isValid != null && isValid) {
+        ref
+            .read(userNotesProvider.notifier)
+            .editNote(noteId.id, updatedNoteContent, updatedDate);
+
+        Navigator.of(context).pushNamedAndRemoveUntil(
+            '/note-screen', (Route<dynamic> route) => false);
+      }
     }
 
     return Scaffold(
@@ -102,31 +110,61 @@ class _NotesEditScreenState extends ConsumerState<NotesEditScreen> {
                 padding:
                     const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                 child: Text(
-                  DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()),
+                  'Current Date and Time: ${DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now())}',
                   style: Theme.of(context).textTheme.titleSmall!.copyWith(
                       color: Theme.of(context).colorScheme.onBackground),
                 ),
               ),
             ),
-            // Edit note textfield
-            TextFormField(
-              controller: _noteEditController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderSide: const BorderSide(width: 2),
-                  borderRadius: BorderRadius.circular(10),
+            Form(
+              key: _formEditNote,
+              child: TextFormField(
+                controller: _noteEditController,
+                validator: (text) {
+                  if (text == null || text.isEmpty) {
+                    return 'This field could not be empty.';
+                  } else {
+                    updatedNoteContent = _noteEditController.text;
+                  }
+                  return null;
+                },
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderSide: const BorderSide(width: 2),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
+                minLines: 10,
+                maxLines: null,
               ),
-              minLines: 10,
-              maxLines: null,
             ),
+            // Edit note textfield
+            // TextFormField(
+            //   controller: _noteEditController,
+            //   validator: (text) {
+            //     if (text == null || text.isEmpty) {
+            //       return 'This field could not be empty';
+            //     } else {
+            //       updatedNoteContent = _noteEditController.text;
+            //     }
+            //     return null;
+            //   },
+            //   decoration: InputDecoration(
+            //     border: OutlineInputBorder(
+            //       borderSide: const BorderSide(width: 2),
+            //       borderRadius: BorderRadius.circular(10),
+            //     ),
+            //   ),
+            //   minLines: 10,
+            //   maxLines: null,
+            // ),
             const SizedBox(height: 20),
             // Edit note save button
             TextButton.icon(
               onPressed: () {
                 editNote();
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    '/note-screen', (Route<dynamic> route) => false);
+                // Navigator.of(context).pushNamedAndRemoveUntil(
+                //     '/note-screen', (Route<dynamic> route) => false);
               },
               icon: const Icon(Icons.check),
               label: const Text('Save'),
