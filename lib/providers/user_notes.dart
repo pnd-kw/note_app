@@ -29,7 +29,7 @@ class UserNotesNotifier extends StateNotifier<List<Note>> {
   // Load Note Provider
   Future<void> loadNote() async {
     final db = await _getDatabase();
-    final dbData = await db.query('user_notes');
+    final dbData = await db.query('user_notes', orderBy: 'updatedAt DESC');
     final note = dbData
         .map(
           (row) => Note(
