@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:note_app/models/note.dart';
 import 'package:note_app/providers/user_notes.dart';
-import 'package:note_app/widgets/notes_appbar.dart';
+import 'package:note_app/widgets/custom_scroll_appbar.dart';
 
 import 'package:note_app/widgets/notes_item.dart';
 
@@ -63,10 +63,9 @@ class _NotesListState extends ConsumerState<NotesList> {
 
   @override
   Widget build(BuildContext context) {
-    widget.notes.sort(((a, b) => a.updatedAt.compareTo(b.updatedAt)));
     if (widget.notes.isEmpty) {
       // Render screen if note is empty
-      return NotesAppBar(
+      return CustomScrollAppBar(
         actions: [
           IconButton(
             onPressed: () {
@@ -96,58 +95,8 @@ class _NotesListState extends ConsumerState<NotesList> {
           ),
         ),
       );
-      // return CustomScrollView(
-      //   slivers: [
-      //     SliverAppBar(
-      //       iconTheme:
-      //           IconThemeData(color: Theme.of(context).colorScheme.background),
-      //       backgroundColor: Theme.of(context).colorScheme.primary,
-      //       expandedHeight: 150,
-      //       pinned: true,
-      //       actions: [
-      //         IconButton(
-      //           onPressed: () {
-      //             Navigator.of(context).pushNamed('/add-note-screen');
-      //           },
-      //           icon: const Icon(Icons.add),
-      //         ),
-      //       ],
-      //       flexibleSpace: FlexibleSpaceBar(
-      //         titlePadding:
-      //             const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-      //         title: Padding(
-      //           padding:
-      //               const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-      //           child: Text(
-      //             'Monote',
-      //             style: Theme.of(context).textTheme.titleMedium,
-      //           ),
-      //         ),
-      //         background: Image.asset(
-      //           'assets/images/header-image.webp',
-      //           fit: BoxFit.cover,
-      //         ),
-      //       ),
-      //     ),
-      //     SliverFillRemaining(
-      //       child: Center(
-      //         child: Padding(
-      //           padding: const EdgeInsets.symmetric(horizontal: 20),
-      //           child: Text(
-      //             'No notes have been taken yet, let${"'"}s'
-      //             ' write something down to help you remember.',
-      //             textAlign: TextAlign.center,
-      //             style: Theme.of(context).textTheme.titleSmall!.copyWith(
-      //                   color: Theme.of(context).colorScheme.onBackground,
-      //                 ),
-      //           ),
-      //         ),
-      //       ),
-      //     ),
-      //   ],
-      // );
     }
-    return NotesAppBar(
+    return CustomScrollAppBar(
       actions: [
         Container(
           padding: const EdgeInsets.only(bottom: 10),
@@ -225,106 +174,5 @@ class _NotesListState extends ConsumerState<NotesList> {
               }),
             ),
     );
-    // return CustomScrollView(
-    //   slivers: [
-    //     SliverAppBar(
-    //       iconTheme:
-    //           IconThemeData(color: Theme.of(context).colorScheme.background),
-    //       backgroundColor: Theme.of(context).colorScheme.primary,
-    //       expandedHeight: 150,
-    //       pinned: true,
-    //       actions: [
-    //         Container(
-    //           padding: const EdgeInsets.only(bottom: 10),
-    //           child: Row(
-    //             children: [
-    //               // Search button
-    //               IconButton(
-    //                 onPressed: () {
-    //                   _searchPressed();
-    //                 },
-    //                 icon: _searchIcon,
-    //               ),
-    //               // Add note button
-    //               IconButton(
-    //                 onPressed: () {
-    //                   Navigator.of(context).pushNamed('/add-note-screen');
-    //                 },
-    //                 icon: const Icon(Icons.add),
-    //               ),
-    //             ],
-    //           ),
-    //         ),
-    //       ],
-    //       flexibleSpace: FlexibleSpaceBar(
-    //         titlePadding:
-    //             const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-    //         title: isSearchClicked
-    //             // Render search text field when search button clicked
-    //             ? SizedBox(
-    //                 height: 50,
-    //                 width: 250,
-    //                 child: TextField(
-    //                   controller: _searchInputController,
-    //                   onChanged: (value) {
-    //                     _filterList(value);
-    //                   },
-    //                   style: Theme.of(context).textTheme.titleSmall!.copyWith(
-    //                         color: Theme.of(context).colorScheme.onBackground,
-    //                       ),
-    //                   decoration: InputDecoration(
-    //                     fillColor: Colors.white,
-    //                     filled: true,
-    //                     hintText: 'search...',
-    //                     hintStyle: const TextStyle(fontSize: 12),
-    //                     border: OutlineInputBorder(
-    //                       borderSide: const BorderSide(color: Colors.white),
-    //                       borderRadius: BorderRadius.circular(10),
-    //                     ),
-    //                     focusedBorder: OutlineInputBorder(
-    //                       borderSide: const BorderSide(color: Colors.white),
-    //                       borderRadius: BorderRadius.circular(10),
-    //                     ),
-    //                     prefixIcon: const Icon(Icons.search),
-    //                   ),
-    //                 ),
-    //               )
-    //             // Render appbar title when search button closed
-    //             : Padding(
-    //                 padding: const EdgeInsets.symmetric(
-    //                     vertical: 10, horizontal: 10),
-    //                 child: Text(
-    //                   'Monote',
-    //                   style: Theme.of(context).textTheme.titleMedium,
-    //                 ),
-    //               ),
-    //         // Sliver appbar background image
-    //         background: Image.asset(
-    //           'assets/images/header-image.webp',
-    //           fit: BoxFit.cover,
-    //         ),
-    //       ),
-    //     ),
-    //     // Render list of note
-    //     SliverPadding(
-    //       padding: const EdgeInsets.symmetric(horizontal: 10),
-    //       sliver: _searchInputController.text.isNotEmpty
-    //           // Render list of note implement filtering
-    //           ? SliverList(
-    //               delegate: SliverChildBuilderDelegate(
-    //                   childCount: filteredList.length, (context, index) {
-    //                 return NotesItem(notes: filteredList[index]);
-    //               }),
-    //             )
-    //           // Render all list of note
-    //           : SliverList(
-    //               delegate: SliverChildBuilderDelegate(
-    //                   childCount: widget.notes.length, (context, index) {
-    //                 return NotesItem(notes: widget.notes[index]);
-    //               }),
-    //             ),
-    //     ),
-    //   ],
-    // );
   }
 }

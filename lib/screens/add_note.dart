@@ -23,9 +23,11 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
   void _saveNote() {
     final enteredTitle = _titleController.text;
     final createdDate =
-        DateFormat('E, d MMM yyyy h:mm a').format(DateTime.now());
+        // DateFormat('E, d MMM yyyy h:mm a').format(DateTime.now());
+        DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
     final updatedDate =
-        DateFormat('E, d MMM yyyy h:mm a').format(DateTime.now());
+        // DateFormat('E, d MMM yyyy h:mm a').format(DateTime.now());
+        DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
     final enteredContent = _noteContentController.text;
 
     if (enteredTitle.isEmpty || enteredContent.isEmpty) {
@@ -72,7 +74,7 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
                 padding:
                     const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                 child: Text(
-                  DateFormat('E, d MMM yyyy h:mm a').format(DateTime.now()),
+                  DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()),
                   style: Theme.of(context).textTheme.titleSmall!.copyWith(
                       color: Theme.of(context).colorScheme.onBackground),
                 ),

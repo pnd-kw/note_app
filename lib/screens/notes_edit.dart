@@ -42,7 +42,7 @@ class _NotesEditScreenState extends ConsumerState<NotesEditScreen> {
     void editNote() {
       final updatedNoteContent = _noteEditController.text;
       final updatedDate =
-          DateFormat('E, d MMM yyyy h:mm a').format(DateTime.now());
+          DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
 
       ref
           .read(userNotesProvider.notifier)
@@ -102,7 +102,7 @@ class _NotesEditScreenState extends ConsumerState<NotesEditScreen> {
                 padding:
                     const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                 child: Text(
-                  DateFormat('E, d MMM yyyy h:mm a').format(DateTime.now()),
+                  DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()),
                   style: Theme.of(context).textTheme.titleSmall!.copyWith(
                       color: Theme.of(context).colorScheme.onBackground),
                 ),
