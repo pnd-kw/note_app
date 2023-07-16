@@ -29,6 +29,7 @@ class NotesItem extends StatelessWidget {
             Navigator.of(context)
                 .pushNamed(NotesEditScreen.routeName, arguments: notes);
           },
+          // Note title
           title: Text(
             notes.title,
             style: Theme.of(context).textTheme.titleMedium!.copyWith(
@@ -38,6 +39,7 @@ class NotesItem extends StatelessWidget {
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Note content preview
               RichText(
                 text: TextSpan(
                   text: notes.noteContent,
@@ -48,6 +50,7 @@ class NotesItem extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 10),
+              // Note created date and latest update
               Column(
                 children: [
                   Row(
