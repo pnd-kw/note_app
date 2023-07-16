@@ -20,6 +20,7 @@ class NotesEditScreen extends ConsumerStatefulWidget {
 class _NotesEditScreenState extends ConsumerState<NotesEditScreen> {
   final _noteEditController = TextEditingController();
 
+  // Get the note initial/latest value
   @override
   void didChangeDependencies() {
     final noteId = ModalRoute.of(context)!.settings.arguments as Note;
@@ -37,6 +38,7 @@ class _NotesEditScreenState extends ConsumerState<NotesEditScreen> {
   Widget build(BuildContext context) {
     final noteId = ModalRoute.of(context)!.settings.arguments as Note;
 
+    // Edit note function
     void editNote() {
       final updatedNoteContent = _noteEditController.text;
       final updatedDate =
@@ -58,6 +60,7 @@ class _NotesEditScreenState extends ConsumerState<NotesEditScreen> {
           style: Theme.of(context).textTheme.titleMedium,
         ),
         actions: [
+          // Delete note button
           IconButton(
             onPressed: () {
               showDialog(
@@ -92,6 +95,20 @@ class _NotesEditScreenState extends ConsumerState<NotesEditScreen> {
         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
         child: Column(
           children: [
+            // Current date text
+            SizedBox(
+              width: double.infinity,
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                child: Text(
+                  DateFormat('E, d MMM yyyy h:mm a').format(DateTime.now()),
+                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                      color: Theme.of(context).colorScheme.onBackground),
+                ),
+              ),
+            ),
+            // Edit note textfield
             TextFormField(
               controller: _noteEditController,
               decoration: InputDecoration(
@@ -104,6 +121,7 @@ class _NotesEditScreenState extends ConsumerState<NotesEditScreen> {
               maxLines: null,
             ),
             const SizedBox(height: 20),
+            // Edit note save button
             TextButton.icon(
               onPressed: () {
                 editNote();

@@ -6,6 +6,7 @@ import 'package:sqflite/sqlite_api.dart';
 
 import 'package:note_app/models/note.dart';
 
+// Database instance
 Future<Database> _getDatabase() async {
   final dbPath = await sql.getDatabasesPath();
   final db = await sql.openDatabase(
@@ -25,9 +26,10 @@ Future<Database> _getDatabase() async {
 class UserNotesNotifier extends StateNotifier<List<Note>> {
   UserNotesNotifier() : super(const []);
 
+  // Load Note Provider
   Future<void> loadNote() async {
     final db = await _getDatabase();
-    final dbData = await db.query('user_notes', orderBy: 'updatedAt DESC');
+    final dbData = await db.query('user_notes');
     final note = dbData
         .map(
           (row) => Note(
@@ -42,6 +44,13 @@ class UserNotesNotifier extends StateNotifier<List<Note>> {
     state = note;
   }
 
+  Future<void> searchNote(String keyword) async {
+    final db = await _getDatabase();
+    db.query('user_notes',
+        where: 'title = ? OR noteContent = ?', whereArgs: [keyword]);
+  }
+
+  // Delete Note Provider
   Future<void> deleteNote(Note notes) async {
     final db = await _getDatabase();
     final id = notes.id;
@@ -50,6 +59,7 @@ class UserNotesNotifier extends StateNotifier<List<Note>> {
     state = [...state.where((notes) => notes.id != id)];
   }
 
+  // Edit Note Provider
   Future<void> editNote(String id, String noteContent, String updatedAt) async {
     final db = await _getDatabase();
     db.update(
@@ -62,6 +72,7 @@ class UserNotesNotifier extends StateNotifier<List<Note>> {
         whereArgs: [id]);
   }
 
+  // Add Note Provider
   void addNote(String title, String noteContent, String createdAt,
       String updatedAt) async {
     final newNote = Note(

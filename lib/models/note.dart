@@ -1,5 +1,7 @@
 import 'package:uuid/uuid.dart';
 
+// Creating the data model
+
 const uuid = Uuid();
 
 class Note {

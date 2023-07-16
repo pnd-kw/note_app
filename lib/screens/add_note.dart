@@ -19,6 +19,7 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
   final _titleController = TextEditingController();
   final _noteContentController = TextEditingController();
 
+  // Save Note Function
   void _saveNote() {
     final enteredTitle = _titleController.text;
     final createdDate =
@@ -64,6 +65,20 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
+            // Current date text
+            SizedBox(
+              width: double.infinity,
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                child: Text(
+                  DateFormat('E, d MMM yyyy h:mm a').format(DateTime.now()),
+                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                      color: Theme.of(context).colorScheme.onBackground),
+                ),
+              ),
+            ),
+            // Note Title TextField
             TextField(
               controller: _titleController,
               decoration: InputDecoration(
@@ -75,6 +90,7 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
               ),
             ),
             const SizedBox(height: 20),
+            // Note TextField
             TextField(
               controller: _noteContentController,
               decoration: InputDecoration(
@@ -88,6 +104,7 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
               maxLines: null,
             ),
             const SizedBox(height: 20),
+            // Add Note Button
             TextButton.icon(
               onPressed: () {
                 _saveNote();
