@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-
 import 'package:intl/intl.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:note_app/providers/user_notes.dart';
+import 'package:note_app/widgets/notes_button.dart';
+import 'package:note_app/widgets/notes_text_field.dart';
 
 class AddNoteScreen extends ConsumerStatefulWidget {
   static const routeName = '/add-note-screen';
@@ -20,25 +21,18 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
   final _noteContentController = TextEditingController();
   String enteredTitle = '';
   String enteredContent = '';
+  final dateTime = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
   final _formAddNote = GlobalKey<FormState>();
 
   // Save Note Function
   void _saveNote() {
-    // final enteredTitle = _titleController.text;
     enteredTitle;
     enteredContent;
-    final createdDate =
-        // DateFormat('E, d MMM yyyy h:mm a').format(DateTime.now());
-        DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
-    final updatedDate =
-        // DateFormat('E, d MMM yyyy h:mm a').format(DateTime.now());
-        DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
-    // final enteredContent = _noteContentController.text;
+    final createdDate = dateTime;
+    // DateFormat('E, d MMM yyyy h:mm a').format(DateTime.now());
+    final updatedDate = dateTime;
+    // DateFormat('E, d MMM yyyy h:mm a').format(DateTime.now());
     final isValid = _formAddNote.currentState?.validate();
-
-    // if (enteredTitle.isEmpty || enteredContent.isEmpty) {
-    //   return;
-    // }
 
     if (isValid != null && isValid) {
       ref.read(userNotesProvider.notifier).addNote(
@@ -82,7 +76,7 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
                 padding:
                     const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                 child: Text(
-                  'Current Date and Time: ${DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now())}',
+                  'Current Date and Time: $dateTime',
                   style: Theme.of(context).textTheme.titleSmall!.copyWith(
                       color: Theme.of(context).colorScheme.onBackground),
                 ),
@@ -93,7 +87,7 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
               child: Column(
                 children: [
                   // Note Title TextField
-                  TextFormField(
+                  NotesTextField(
                     controller: _titleController,
                     validator: (text) {
                       if (text == null || text.isEmpty) {
@@ -103,17 +97,11 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
                       }
                       return null;
                     },
-                    decoration: InputDecoration(
-                      labelText: 'Title',
-                      border: OutlineInputBorder(
-                        borderSide: const BorderSide(width: 2),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
+                    labelText: 'Title',
                   ),
                   const SizedBox(height: 20),
                   // Note TextField
-                  TextFormField(
+                  NotesTextField(
                     controller: _noteContentController,
                     validator: (text) {
                       if (text == null || text.isEmpty) {
@@ -123,76 +111,21 @@ class _AddNoteScreenState extends ConsumerState<AddNoteScreen> {
                       }
                       return null;
                     },
-                    decoration: InputDecoration(
-                      labelText: 'This is my note...',
-                      border: OutlineInputBorder(
-                        borderSide: const BorderSide(width: 2),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
+                    labelText: 'This is my note...',
                     minLines: 10,
                     maxLines: null,
                   ),
                 ],
               ),
             ),
-            // // Note Title TextField
-            // TextFormField(
-            //   controller: _titleController,
-            //   validator: (text) {
-            //     if (text == null || text.isEmpty) {
-            //       return 'This field could not be empty.';
-            //     } else {
-            //       enteredTitle = _titleController.text;
-            //     }
-            //     return null;
-            //   },
-            //   decoration: InputDecoration(
-            //     labelText: 'Title',
-            //     border: OutlineInputBorder(
-            //       borderSide: const BorderSide(width: 2),
-            //       borderRadius: BorderRadius.circular(10),
-            //     ),
-            //   ),
-            // ),
-            // const SizedBox(height: 20),
-            // // Note TextField
-            // TextFormField(
-            //   controller: _noteContentController,
-            //   validator: (text) {
-            //     if (text == null || text.isEmpty) {
-            //       return 'This field could not be empty.';
-            //     } else {
-            //       enteredContent = _noteContentController.text;
-            //     }
-            //     return null;
-            //   },
-            //   decoration: InputDecoration(
-            //     labelText: 'This is my note...',
-            //     border: OutlineInputBorder(
-            //       borderSide: const BorderSide(width: 2),
-            //       borderRadius: BorderRadius.circular(10),
-            //     ),
-            //   ),
-            //   minLines: 10,
-            //   maxLines: null,
-            // ),
             const SizedBox(height: 20),
             // Add Note Button
-            TextButton.icon(
+            NotesButton(
               onPressed: () {
                 _saveNote();
               },
               icon: const Icon(Icons.add),
               label: const Text('Add Note'),
-              style: ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll(
-                  Theme.of(context).colorScheme.primary,
-                ),
-                foregroundColor: MaterialStatePropertyAll(
-                  Theme.of(context).colorScheme.background,
-                ),
-              ),
             ),
           ],
         ),

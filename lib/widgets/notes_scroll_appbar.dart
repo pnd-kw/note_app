@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class CustomScrollAppBar extends StatelessWidget {
-  const CustomScrollAppBar({
+class NotesScrollAppBar extends StatelessWidget {
+  const NotesScrollAppBar({
     super.key,
     required this.actions,
     required this.title,
