@@ -5,13 +5,13 @@ class NotesScrollAppBar extends StatelessWidget {
     super.key,
     required this.actions,
     required this.title,
-    this.sliverFillRemaining,
+    // this.sliverFillRemaining,
     this.sliverPadding,
   });
 
   final List<Widget> actions;
   final Widget title;
-  final Widget? sliverFillRemaining;
+  // final Widget? sliverFillRemaining;
   final Widget? sliverPadding;
 
   @override
@@ -39,9 +39,9 @@ class NotesScrollAppBar extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 10),
           sliver: sliverPadding,
         ),
-        SliverFillRemaining(
-          child: sliverFillRemaining,
-        ),
+        // SliverFillRemaining(
+        //   child: sliverFillRemaining,
+        // ),
       ],
     );
   }

@@ -81,7 +81,7 @@ class _NotesListState extends ConsumerState<NotesList> {
             style: Theme.of(context).textTheme.titleMedium,
           ),
         ),
-        sliverFillRemaining: Center(
+        sliverPadding: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Text(
@@ -94,6 +94,19 @@ class _NotesListState extends ConsumerState<NotesList> {
             ),
           ),
         ),
+        // sliverFillRemaining: Center(
+        //   child: Padding(
+        //     padding: const EdgeInsets.symmetric(horizontal: 20),
+        //     child: Text(
+        //       'No notes have been taken yet, let${"'"}s'
+        //       ' write something down to help you remember.',
+        //       textAlign: TextAlign.center,
+        //       style: Theme.of(context).textTheme.titleSmall!.copyWith(
+        //             color: Theme.of(context).colorScheme.onBackground,
+        //           ),
+        //     ),
+        //   ),
+        // ),
       );
     }
     return NotesScrollAppBar(
