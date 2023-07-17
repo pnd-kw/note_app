@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:note_app/providers/user_notes.dart';
 
 import 'package:note_app/models/note.dart';
+import 'package:note_app/widgets/notes_button.dart';
+import 'package:note_app/widgets/notes_text_field.dart';
 
 class NotesEditScreen extends ConsumerStatefulWidget {
   static const routeName = '/note-edit-screen';
@@ -19,6 +21,9 @@ class NotesEditScreen extends ConsumerStatefulWidget {
 
 class _NotesEditScreenState extends ConsumerState<NotesEditScreen> {
   final _noteEditController = TextEditingController();
+  String updatedNoteContent = '';
+  final dateTime = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
+  final _formEditNote = GlobalKey<FormState>();
 
   // Get the note initial/latest value
   @override
@@ -40,13 +45,19 @@ class _NotesEditScreenState extends ConsumerState<NotesEditScreen> {
 
     // Edit note function
     void editNote() {
-      final updatedNoteContent = _noteEditController.text;
-      final updatedDate =
-          DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
+      updatedNoteContent;
+      final updatedDate = dateTime;
+      // DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
+      final isValid = _formEditNote.currentState?.validate();
 
-      ref
-          .read(userNotesProvider.notifier)
-          .editNote(noteId.id, updatedNoteContent, updatedDate);
+      if (isValid != null && isValid) {
+        ref
+            .read(userNotesProvider.notifier)
+            .editNote(noteId.id, updatedNoteContent, updatedDate);
+
+        Navigator.of(context).pushNamedAndRemoveUntil(
+            '/note-screen', (Route<dynamic> route) => false);
+      }
     }
 
     return Scaffold(
@@ -102,42 +113,36 @@ class _NotesEditScreenState extends ConsumerState<NotesEditScreen> {
                 padding:
                     const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                 child: Text(
-                  DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()),
+                  'Current Date and Time: $dateTime',
                   style: Theme.of(context).textTheme.titleSmall!.copyWith(
                       color: Theme.of(context).colorScheme.onBackground),
                 ),
               ),
             ),
-            // Edit note textfield
-            TextFormField(
-              controller: _noteEditController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderSide: const BorderSide(width: 2),
-                  borderRadius: BorderRadius.circular(10),
-                ),
+            Form(
+              key: _formEditNote,
+              child: NotesTextField(
+                controller: _noteEditController,
+                validator: (text) {
+                  if (text == null || text.isEmpty) {
+                    return 'This field could not be empty.';
+                  } else {
+                    updatedNoteContent = _noteEditController.text;
+                  }
+                  return null;
+                },
+                minLines: 10,
+                maxLines: null,
               ),
-              minLines: 10,
-              maxLines: null,
             ),
             const SizedBox(height: 20),
             // Edit note save button
-            TextButton.icon(
+            NotesButton(
               onPressed: () {
                 editNote();
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    '/note-screen', (Route<dynamic> route) => false);
               },
               icon: const Icon(Icons.check),
               label: const Text('Save'),
-              style: ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll(
-                  Theme.of(context).colorScheme.primary,
-                ),
-                foregroundColor: MaterialStatePropertyAll(
-                  Theme.of(context).colorScheme.background,
-                ),
-              ),
             ),
           ],
         ),

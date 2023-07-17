@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:note_app/models/note.dart';
 import 'package:note_app/providers/user_notes.dart';
-import 'package:note_app/widgets/custom_scroll_appbar.dart';
+import 'package:note_app/widgets/notes_scroll_appbar.dart';
 
 import 'package:note_app/widgets/notes_item.dart';
 
@@ -65,7 +65,7 @@ class _NotesListState extends ConsumerState<NotesList> {
   Widget build(BuildContext context) {
     if (widget.notes.isEmpty) {
       // Render screen if note is empty
-      return CustomScrollAppBar(
+      return NotesScrollAppBar(
         actions: [
           IconButton(
             onPressed: () {
@@ -96,7 +96,7 @@ class _NotesListState extends ConsumerState<NotesList> {
         ),
       );
     }
-    return CustomScrollAppBar(
+    return NotesScrollAppBar(
       actions: [
         Container(
           padding: const EdgeInsets.only(bottom: 10),
