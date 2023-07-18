@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:note_app/models/note.dart';
 import 'package:note_app/providers/user_notes.dart';
-import 'package:note_app/widgets/notes_scroll_appbar.dart';
 
 import 'package:note_app/widgets/notes_item.dart';
 
@@ -65,64 +64,15 @@ class _NotesListState extends ConsumerState<NotesList> {
   Widget build(BuildContext context) {
     if (widget.notes.isEmpty) {
       // Render screen if note is empty
-      return NotesScrollAppBar(
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.of(context).pushNamed('/add-note-screen');
-            },
-            icon: const Icon(Icons.add),
-          ),
-        ],
-        title: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-          child: Text(
-            'Monote',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-        ),
-        sliverPadding: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Text(
-              'No notes have been taken yet, let${"'"}s'
-              ' write something down to help you remember.',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                    color: Theme.of(context).colorScheme.onBackground,
-                  ),
-            ),
-          ),
-        ),
-        // sliverFillRemaining: Center(
-        //   child: Padding(
-        //     padding: const EdgeInsets.symmetric(horizontal: 20),
-        //     child: Text(
-        //       'No notes have been taken yet, let${"'"}s'
-        //       ' write something down to help you remember.',
-        //       textAlign: TextAlign.center,
-        //       style: Theme.of(context).textTheme.titleSmall!.copyWith(
-        //             color: Theme.of(context).colorScheme.onBackground,
-        //           ),
-        //     ),
-        //   ),
-        // ),
-      );
-    }
-    return NotesScrollAppBar(
-      actions: [
-        Container(
-          padding: const EdgeInsets.only(bottom: 10),
-          child: Row(
-            children: [
-              // Search button
-              IconButton(
-                onPressed: () {
-                  _searchPressed();
-                },
-                icon: _searchIcon,
-              ),
-              // Add note button
+      return CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            iconTheme:
+                IconThemeData(color: Theme.of(context).colorScheme.background),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            expandedHeight: 150,
+            pinned: true,
+            actions: [
               IconButton(
                 onPressed: () {
                   Navigator.of(context).pushNamed('/add-note-screen');
@@ -130,62 +80,152 @@ class _NotesListState extends ConsumerState<NotesList> {
                 icon: const Icon(Icons.add),
               ),
             ],
-          ),
-        ),
-      ],
-      title: isSearchClicked
-          // Render search text field when search button clicked
-          ? SizedBox(
-              height: 50,
-              width: 250,
-              child: TextField(
-                controller: _searchInputController,
-                onChanged: (value) {
-                  _filterList(value);
-                },
-                style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                      color: Theme.of(context).colorScheme.onBackground,
-                    ),
-                decoration: InputDecoration(
-                  fillColor: Colors.white,
-                  filled: true,
-                  hintText: 'search...',
-                  hintStyle: const TextStyle(fontSize: 12),
-                  border: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.white),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.white),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  prefixIcon: const Icon(Icons.search),
+            flexibleSpace: FlexibleSpaceBar(
+              titlePadding:
+                  const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              title: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                child: Text(
+                  'Monote',
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
               ),
-            )
-          // Render appbar title when search button closed
-          : Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-              child: Text(
-                'Monote',
-                style: Theme.of(context).textTheme.titleMedium,
+              background: Image.asset(
+                'assets/images/header-image.webp',
+                fit: BoxFit.cover,
               ),
             ),
-      sliverPadding: _searchInputController.text.isNotEmpty
-          // Render list of note implement filtering
-          ? SliverList(
-              delegate: SliverChildBuilderDelegate(
-                  childCount: filteredList.length, (context, index) {
-                return NotesItem(notes: filteredList[index]);
-              }),
-            )
-          // Render all list of note
-          : SliverList(
-              delegate: SliverChildBuilderDelegate(
-                  childCount: widget.notes.length, (context, index) {
-                return NotesItem(notes: widget.notes[index]);
-              }),
+          ),
+          SliverFillRemaining(
+            child: Center(
+              child: Column(
+                children: [
+                  Expanded(
+                    child: SizedBox(
+                      height: 250,
+                      child: Image.asset(
+                        'assets/images/empty-note.webp',
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 20, horizontal: 20),
+                    child: Text(
+                      'No notes have been taken yet, let${"'"}s'
+                      ' write something down to help you remember.',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                            color: Theme.of(context).colorScheme.onBackground,
+                          ),
+                    ),
+                  ),
+                ],
+              ),
             ),
+          ),
+        ],
+      );
+    }
+    return CustomScrollView(
+      slivers: [
+        SliverAppBar(
+          iconTheme:
+              IconThemeData(color: Theme.of(context).colorScheme.background),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          expandedHeight: 150,
+          pinned: true,
+          actions: [
+            Container(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Row(
+                children: [
+                  // Search button
+                  IconButton(
+                    onPressed: () {
+                      _searchPressed();
+                    },
+                    icon: _searchIcon,
+                  ),
+                  // Add note button
+                  IconButton(
+                    onPressed: () {
+                      Navigator.of(context).pushNamed('/add-note-screen');
+                    },
+                    icon: const Icon(Icons.add),
+                  ),
+                ],
+              ),
+            ),
+          ],
+          flexibleSpace: FlexibleSpaceBar(
+            titlePadding:
+                const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            title: isSearchClicked
+                // Render search text field when search button clicked
+                ? SizedBox(
+                    height: 50,
+                    width: 250,
+                    child: TextField(
+                      controller: _searchInputController,
+                      onChanged: (value) {
+                        _filterList(value);
+                      },
+                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                            color: Theme.of(context).colorScheme.onBackground,
+                          ),
+                      decoration: InputDecoration(
+                        fillColor: Colors.white,
+                        filled: true,
+                        hintText: 'search...',
+                        hintStyle: const TextStyle(fontSize: 12),
+                        border: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.white),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.white),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        prefixIcon: const Icon(Icons.search),
+                      ),
+                    ),
+                  )
+                // Render appbar title when search button closed
+                : Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 10),
+                    child: Text(
+                      'Monote',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ),
+            background: Image.asset(
+              'assets/images/header-image.webp',
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        SliverPadding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          sliver: _searchInputController.text.isNotEmpty
+              // Render list of note implement filtering
+              ? SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                      childCount: filteredList.length, (context, index) {
+                    return NotesItem(notes: filteredList[index]);
+                  }),
+                )
+              // Render all list of note
+              : SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                      childCount: widget.notes.length, (context, index) {
+                    return NotesItem(notes: widget.notes[index]);
+                  }),
+                ),
+        ),
+      ],
     );
   }
 }
