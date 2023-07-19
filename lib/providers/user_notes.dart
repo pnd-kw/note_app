@@ -13,12 +13,12 @@ Future<Database> _getDatabase() async {
     path.join(dbPath, 'notes.db'),
     onCreate: (db, version) {
       return db.execute(
-          'CREATE TABLE user_notes(id TEXT PRIMARY KEY, title TEXT, noteContent TEXT, createdAt DATETIME)');
+          'CREATE TABLE user_notes(id TEXT PRIMARY KEY, title TEXT, noteContent TEXT, createdAt DATETIME, updatedAt DATETIME)');
     },
-    onUpgrade: (db, oldVersion, newVersion) {
-      return db.execute('ALTER TABLE user_notes ADD COLUMN updatedAt DATETIME');
-    },
-    version: 2,
+    // onUpgrade: (db, oldVersion, newVersion) {
+    //   return db.execute('ALTER TABLE user_notes ADD COLUMN updatedAt DATETIME');
+    // },
+    version: 1,
   );
   return db;
 }
